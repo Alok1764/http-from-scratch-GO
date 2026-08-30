@@ -22,7 +22,7 @@ func getLinesChannel(f io.ReadCloser) <-chan string {
 			if err != nil {
 				break
 			}
-
+			data = data[:n]
 			if i := bytes.IndexByte(data, '\n'); i == -1 {
 				st += string(data[:n])
 			} else {
@@ -32,12 +32,18 @@ func getLinesChannel(f io.ReadCloser) <-chan string {
 			}
 
 		}
+		if st != "" {
+			ans <- st
+		}
 
 	}()
 
 	return ans
 }
 func main() {
+
+	// on server go run ./cmd/tcplistener | tee /tmp/rawpost.http
+	// on client curl.exe -X POST -H "Content-Type: application/json" -d '{"flavor":"dark mode"}' http://localhost:1764/coffee
 
 	listner, err := net.Listen("tcp", ":1764")
 	if err != nil {
