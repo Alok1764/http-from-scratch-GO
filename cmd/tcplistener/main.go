@@ -1,6 +1,7 @@
 package main
 
 import (
+	"alok/internal/request"
 	"bytes"
 	"fmt"
 	"io"
@@ -54,9 +55,12 @@ func main() {
 		log.Fatal("error :", err)
 	}
 
-	lines := getLinesChannel(conn)
-	for line := range lines {
-		fmt.Printf("read: %s\n", line)
-	}
+	RequestLine, err := request.RequestFromReader(conn)
+
+	fmt.Println("- Method: ", RequestLine.RequestLine.Method)
+
+	fmt.Println("- Target: ", RequestLine.RequestLine.RequestTarget)
+
+	fmt.Println("- version: ", RequestLine.RequestLine.HttpVersion)
 
 }
